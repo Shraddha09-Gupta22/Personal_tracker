@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
+import cors from "cors";
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import expenseRoutes from "./routes/expenseRoutes.js";
@@ -10,6 +11,13 @@ dotenv.config();
 
 const app = express();
 app.use(express.json());
+app.use(
+  cors({
+    origin: "http://localhost:5173", // React frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true, // allow cookies & authorization headers
+  })
+);
 
 mongoose
   .connect(process.env.URL)

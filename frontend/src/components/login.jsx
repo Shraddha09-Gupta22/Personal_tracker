@@ -19,8 +19,10 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", credentials);
       localStorage.setItem("token", res.data.token);
+      // console.log(res.data.token)
       alert("✅ Login successful!");
-      navigate("/"); // redirect to homepage/dashboard
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
     } catch (err) {
       setError(err.response?.data?.message || "Login failed.");
     } finally {
@@ -31,7 +33,9 @@ const Login = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">Welcome Back</h2>
+        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+          Welcome Back
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="email"
@@ -60,7 +64,10 @@ const Login = () => {
         {/* Not registered link */}
         <p className="text-center text-gray-600 mt-4">
           Don’t have an account?{" "}
-          <Link to="/register" className="text-indigo-600 font-semibold hover:underline">
+          <Link
+            to="/register"
+            className="text-indigo-600 font-semibold hover:underline"
+          >
             Register here
           </Link>
         </p>
