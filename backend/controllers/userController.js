@@ -31,7 +31,7 @@ const getUser = async (req, res) => {
 
 const deleteUser = async (req, res) => {
   try {
-    const id = req.user._id;
+    const id = req.user.userId;
     // console.log(id);
 
     await Expense.deleteMany(id);
@@ -60,9 +60,9 @@ const deleteUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const user = req.user;
-    console.log(user);
+    // console.log("user ", user);
     const { name, email, password } = req.body;
-
+    // console.log("name ", name);
     if (name) {
       user.name = name;
     }

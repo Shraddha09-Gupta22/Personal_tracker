@@ -1,75 +1,84 @@
 import React, { useState } from "react";
-import axios from "../api/axiosInstance";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Login = () => {
-  const [credentials, setCredentials] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
   const navigate = useNavigate();
-
-  const handleChange = (e) => {
-    setCredentials({ ...credentials, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError("");
+    setError(""); // reset error
+
     try {
-      const res = await axios.post("/auth/login", credentials);
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+
+      // ✅ Save token to localStorage
       localStorage.setItem("token", res.data.token);
-      // console.log(res.data.token)
-      alert("✅ Login successful!");
-      localStorage.setItem("token", res.data.token);
+
+      // ✅ Redirect to dashboard
       navigate("/dashboard");
     } catch (err) {
-      setError(err.response?.data?.message || "Login failed.");
-    } finally {
-      setLoading(false);
+      console.error("Login error:", err);
+      setError(
+        err.response?.data?.message || "Something went wrong. Try again."
+      );
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">
-          Welcome Back
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-4">
+      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+        <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">
+          Login
         </h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
+
+        {error && (
+          <div className="bg-red-100 text-red-700 p-2 rounded mb-4 text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <input
             type="email"
-            name="email"
             placeholder="Email"
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+
           <input
             type="password"
-            name="password"
             placeholder="Password"
-            onChange={handleChange}
-            className="w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            className="p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
+
           <button
             type="submit"
-            disabled={loading}
-            className="w-full bg-indigo-600 text-white py-3 rounded-lg font-semibold hover:bg-indigo-700 transition"
+            className="bg-indigo-500 text-white font-semibold py-3 rounded-lg hover:bg-indigo-600 transition-colors"
           >
-            {loading ? "Logging in..." : "Login"}
+            Login
           </button>
         </form>
-        {error && <p className="text-red-500 text-center mt-3">{error}</p>}
 
-        {/* Not registered link */}
-        <p className="text-center text-gray-600 mt-4">
-          Don’t have an account?{" "}
-          <Link
-            to="/register"
-            className="text-indigo-600 font-semibold hover:underline"
+        <p className="text-gray-500 text-sm mt-4 text-center">
+          Don't have an account?{" "}
+          <span
+            className="text-indigo-500 cursor-pointer hover:underline"
+            onClick={() => navigate("/register")}
           >
-            Register here
-          </Link>
+            Register
+          </span>
         </p>
       </div>
     </div>

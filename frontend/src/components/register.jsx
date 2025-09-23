@@ -3,7 +3,11 @@ import axios from "../api/axiosInstance";
 import { useNavigate, Link } from "react-router-dom";
 
 const Register = () => {
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -30,7 +34,9 @@ const Register = () => {
   return (
     <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-indigo-500 to-purple-600">
       <div className="w-full max-w-md bg-white shadow-xl rounded-2xl p-8">
-        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">Create an Account</h2>
+        <h2 className="text-3xl font-bold text-center text-indigo-600 mb-6">
+          Create an Account
+        </h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
             type="text"
@@ -66,7 +72,10 @@ const Register = () => {
         {/* Already registered link */}
         <p className="text-center text-gray-600 mt-4">
           Already registered?{" "}
-          <Link to="/login" className="text-indigo-600 font-semibold hover:underline">
+          <Link
+            to="/login"
+            className="text-indigo-600 font-semibold hover:underline"
+          >
             Go to Login
           </Link>
         </p>

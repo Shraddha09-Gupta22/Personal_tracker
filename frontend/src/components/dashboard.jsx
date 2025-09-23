@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { jwtDecode } from "jwt-decode";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -12,38 +13,45 @@ const Dashboard = () => {
   });
   const [recentExpenses, setRecentExpenses] = useState([]);
 
-  // ✅ Fetch user profile + expenses after login
   useEffect(() => {
     const token = localStorage.getItem("token");
-
     if (!token) {
-      navigate("/login"); // if no token, redirect back to login
+      navigate("/login");
+      return;
+    }
+
+    let id;
+    try {
+      const decoded = jwtDecode(token);
+      id = decoded.userId;
+    } catch (err) {
+      console.error("Invalid token", err);
+      navigate("/login");
       return;
     }
 
     const fetchData = async () => {
       try {
-        // get user profile
+        // Get user
         const userRes = await axios.get(
-          "http://localhost:5000/api/user/profile",
+          `http://localhost:5000/api/users/${id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
         setUser(userRes.data);
 
-        // get all expenses
+        // Get expenses
         const expenseRes = await axios.get(
-          "http://localhost:5000/api/allExpense",
+          "http://localhost:5000/api/expense/allExpense",
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        const expenses = expenseRes.data.expenses || [];
-        setRecentExpenses(expenses.slice(0, 5)); // last 5
+        const expenses = expenseRes.data.expense || [];
+        setRecentExpenses(expenses.slice(0, 5));
 
-        // calculate stats
         const income = expenses
           .filter((e) => e.type === "income")
           .reduce((sum, e) => sum + e.amount, 0);
@@ -59,7 +67,7 @@ const Dashboard = () => {
         });
       } catch (err) {
         console.error("Error fetching dashboard data", err);
-        navigate("/login"); // if token invalid, back to login
+        navigate("/login");
       }
     };
 
@@ -68,9 +76,32 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 flex flex-col items-center p-8">
-      <h1 className="text-3xl font-bold text-white mb-6">
-        Welcome, {user?.name || "User"} 👋
-      </h1>
+      {/* Header with buttons */}
+      <div className="w-full max-w-5xl flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-white">
+          Welcome, {user?.name || "User"} 👋
+        </h1>
+        <div className="flex gap-3">
+          <button
+            onClick={() => navigate("/profile")}
+            className="bg-white text-indigo-500 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100"
+          >
+            Profile
+          </button>
+          <button
+            onClick={() => navigate("/add-expense")}
+            className="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600"
+          >
+            Add Expense
+          </button>
+          <button
+            onClick={() => navigate("/add-income")}
+            className="bg-green-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-green-600"
+          >
+            Add Income
+          </button>
+        </div>
+      </div>
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl mb-8">

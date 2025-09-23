@@ -6,7 +6,7 @@ const addBudget = async (req, res) => {
     // console.log(category, amount, month);
 
     const budget = await Budget.create({
-      userId: req.user._id,
+      userId: req.user.userId,
       category,
       amount,
       month,
@@ -29,7 +29,7 @@ const addBudget = async (req, res) => {
 
 const getAllBudget = async (req, res) => {
   try {
-    const id = req.user._id;
+    const id = req.user.userId;
     console.log(id);
 
     const allBudget = await Budget.find({ userId: id });
@@ -50,7 +50,7 @@ const getAllBudget = async (req, res) => {
 
 const getBudget = async (req, res) => {
   try {
-    const userId = req.user._id;
+    const userId = req.user.userId;
     const budgetId = req.params.id;
 
     const budget = await Budget.find({ userId, _id: budgetId });
@@ -76,7 +76,7 @@ const getBudget = async (req, res) => {
 
 const updateBudget = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { id } = req.params;
 
     const budget = await Budget.findOne({ _id: id, userId });
@@ -93,13 +93,11 @@ const updateBudget = async (req, res) => {
       runValidators: true,
     });
 
-    res
-      .status(200)
-      .json({
-        success: true,
-        data: updatedBudget,
-        message: "Budget updated succesfully.",
-      });
+    res.status(200).json({
+      success: true,
+      data: updatedBudget,
+      message: "Budget updated succesfully.",
+    });
   } catch (error) {
     res
       .status(500)
@@ -109,7 +107,7 @@ const updateBudget = async (req, res) => {
 
 const deleteBudget = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const { id } = req.params;
 
     const budget = await Budget.findOne({ _id: id, userId });

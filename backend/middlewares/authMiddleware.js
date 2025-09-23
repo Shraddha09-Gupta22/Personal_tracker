@@ -19,18 +19,9 @@ const protect = async (req, res, next) => {
     }
 
     const decode = jwt.verify(token, process.env.JWT_SECRET);
-    // console.log(decode);
+    console.log("decode ", decode);
+    req.user = decode;
 
-    const user = await User.findById(decode.userId);
-    // console.log("user", user);
-    if (!user) {
-      res.status(400).json({
-        success: false,
-        message: "User Not Found",
-      });
-    }
-
-    req.user = user;
     next();
   } catch (err) {
     res.status(500).json({

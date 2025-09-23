@@ -18,8 +18,10 @@ const addExpense = async (req, res) => {
       });
     }
 
+    console.log(req.user.userId);
+
     const newExpense = await Expense.create({
-      userId: req.user._id,
+      userId: req.user.userId,
       amount: Number(amount),
       category: category.trim(),
       type,
@@ -43,9 +45,8 @@ const addExpense = async (req, res) => {
 const getAllExpense = async (req, res) => {
   try {
     const id = req.user.userId;
-    console.log(id);
-
-    const allExpense = await Expense.find({ id }).sort({ date: -1 });
+    console.log("expense ", id);
+    const allExpense = await Expense.find({ userId: id }).sort({ date: -1 });
     console.log(allExpense);
     res.status(200).json({
       success: true,
@@ -62,7 +63,7 @@ const getAllExpense = async (req, res) => {
 
 const updateExpense = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const expenseId = req.params.id;
 
     const expense = await Expense.findOne({ _id: expenseId, userId });
@@ -114,7 +115,7 @@ const updateExpense = async (req, res) => {
 
 const deleteExpense = async (req, res) => {
   try {
-    const userId = req.user.id;
+    const userId = req.user.userId;
     const expenseId = req.params.id;
     console.log(userId, expenseId);
 
