@@ -24,7 +24,7 @@ const AddTransaction = ({ type }) => {
 
     try {
       await axios.post(
-        "http://localhost:5000/api/expense/create",
+        "http://localhost:5000/api/expense/add",
         { amount, category, description, date, type },
         { headers: { Authorization: `Bearer ${token}` } }
       );
