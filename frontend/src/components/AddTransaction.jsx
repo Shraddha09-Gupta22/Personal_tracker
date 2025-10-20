@@ -10,7 +10,6 @@ const AddTransaction = ({ type }) => {
   const [date, setDate] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [failer, setFailer] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
