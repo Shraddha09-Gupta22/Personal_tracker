@@ -2,6 +2,7 @@ import User from "../models/userModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
+// code starts here
 const login = async (req, res) => {
   try {
     const { email, password } = req.body;
